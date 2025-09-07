@@ -1,0 +1,8 @@
+# Catálogo de Biblioteca Digital
+# Formato: ID|Título|Autor|ISBN|Editorial|Año|Categoría|Tipo
+LF001|Java: The Complete Reference|Herbert Schildt|978-0071808552|McGraw-Hill Education|2020|ProgramaciónI|LibroFisico
+LF002|Clean Code|Robert C. Martin|978-0132350884|Prentice Hall|2008|Aplicaiones Web|LibroFisico
+LF003|Design Patterns|Gang of Four|978-0201633612|Addison-Wesley|1994|ProgramaciónII|LibroFisico
+LD001|Effective Java|Ing. Claudio Gutierrez|978-0134685991|Clase y Objetos|2018|Programación|LibroDigital
+LD002|Effective Java|Spring Team|978-2468013570|Arreglos en Java|2023|Frameworks|LibroDigital
+AB001|The Pragmatic Programmer|Andy Hunt & Dave Thomas|978-0201616224|Addison-Wesley|1999|Desarrollo de Software|Audiobook
