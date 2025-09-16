@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public abstract class Recurso implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     protected String titulo;
     protected String idRecurso;
     protected String autor;
@@ -14,7 +14,8 @@ public abstract class Recurso implements Serializable {
     protected String categoria;
     protected boolean disponible;
 
-    public Recurso(String titulo, String idRecurso, String autor, String isbn, String editorial, int año, String categoria) {
+    public Recurso(String titulo, String idRecurso, String autor, String isbn,
+                   String editorial, int año, String categoria) {
         this.titulo = titulo;
         this.idRecurso = idRecurso;
         this.autor = autor;
@@ -35,10 +36,15 @@ public abstract class Recurso implements Serializable {
     public String getCategoria() { return categoria; }
     public boolean isDisponible() { return disponible; }
 
-   
+    // Setters
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public void setAutor(String autor) { this.autor = autor; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
+    public void setEditorial(String editorial) { this.editorial = editorial; }
+    public void setAño(int año) { this.año = año; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
     public void setDisponible(boolean disponible) { this.disponible = disponible; }
-    
-   
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -46,12 +52,12 @@ public abstract class Recurso implements Serializable {
         Recurso recurso = (Recurso) obj;
         return idRecurso.equals(recurso.idRecurso);
     }
-    
+
     @Override
     public int hashCode() {
         return idRecurso.hashCode();
     }
-    
+
     @Override
     public String toString() {
         return titulo + " (" + idRecurso + ")";
