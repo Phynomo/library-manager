@@ -55,7 +55,7 @@ public class CSVManager {
                 if (recurso instanceof LibroDigital) {
                     LibroDigital ld = (LibroDigital) recurso;
                     infoAdicional = String.format("Formato:%s;Tamaño:%.2fMB", 
-                        ld.getformato(), ld.gettamañoMB());
+                        ld.getFormato(), ld.getTamañoMB());
                 } else if (recurso instanceof Audiobook) {
                     Audiobook ab = (Audiobook) recurso;
                     infoAdicional = String.format("Narrador:%s;Duracion:%dmin", 
