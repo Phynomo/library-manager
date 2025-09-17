@@ -62,7 +62,8 @@ public class VentanaPrincipal extends JFrame {
     private JPanel crearPanelEstadisticas() {
         JPanel panel = new JPanel(new FlowLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Estadísticas en Tiempo Real"));
-        panel.setBackground(new Color(240, 248, 255));
+        panel.setBackground(new Color(240, 240, 225));
+        
         
         JLabel lblUsuarios = new JLabel("Usuarios: " + gestor.getusuarios().size());
         JLabel lblRecursos = new JLabel("Recursos: " + gestor.getcatalogo().size());  

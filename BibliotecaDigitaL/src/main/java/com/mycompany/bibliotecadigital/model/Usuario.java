@@ -33,6 +33,9 @@ public abstract class Usuario implements Serializable {
     // Setters
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setEmail(String email) { this.email = email; }
+    //se agregaron dos contructores mas para setear el id y carrera
+    public void setId(String identificacion) { this.identificacion = identificacion; }
+  
     
     // Método equals para comparación en listas
     @Override

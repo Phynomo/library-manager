@@ -13,7 +13,6 @@ public class GestorBiblioteca {
     public GestorBiblioteca() {
         cargarDatos();
     }
-
     
     private void cargarDatos() {
         this.usuarios = ArchivoUsuarios.cargarUsuarios();
@@ -26,7 +25,13 @@ public class GestorBiblioteca {
         List<String> lineasCatalogo = ArchivoCatalogo.cargarCatalogo();
        
     }
-
+//metodo para eliminar usuario de la lista
+public void eliminarUsuario(String id) {
+    Usuario encontrado = buscarUsuario(id);
+    if (encontrado != null) {
+        usuarios.remove(encontrado);
+    }
+}
     
     public boolean registrarUsuario(Usuario usuario) {
        
