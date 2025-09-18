@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 public class Prestamo implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     private Usuario usuario;
     private Recurso recurso;
     private Date fechaPrestamo;
@@ -34,7 +34,7 @@ public class Prestamo implements Serializable {
     public void devolver() {
         this.fechaDevolucion = new Date();
         this.activo = false;
-        
+
         // Calcular multa si está vencido
         if (estaVencido()) {
             int diasRetraso = getDiasRetraso();
@@ -46,6 +46,17 @@ public class Prestamo implements Serializable {
         return activo && new Date().after(fechaVencimiento);
     }
 
+    public String estado() {
+        if (activo)
+        {
+            if (new Date().after(fechaVencimiento))
+                return "VENCIDO";
+
+            return "ACTIVO";
+        }
+        else return "DEVUELTO";
+    }
+
     public int getDiasRetraso() {
         if (!activo || !estaVencido()) return 0;
         long diferenciaMilis = new Date().getTime() - fechaVencimiento.getTime();
@@ -53,14 +64,36 @@ public class Prestamo implements Serializable {
     }
 
     // Getters
-    public Usuario getUsuario() { return usuario; }
-    public Recurso getRecurso() { return recurso; }
-    public Date getFechaPrestamo() { return fechaPrestamo; }
-    public Date getFechaVencimiento() { return fechaVencimiento; }
-    public Date getFechaDevolucion() { return fechaDevolucion; }
-    public boolean isActivo() { return activo; }
-    public double getMulta() { return multa; }
-    
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public Recurso getRecurso() {
+        return recurso;
+    }
+
+    public Date getFechaPrestamo() {
+        return fechaPrestamo;
+    }
+
+    public Date getFechaVencimiento() {
+        return fechaVencimiento;
+    }
+
+    public Date getFechaDevolucion() {
+        return fechaDevolucion;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public double getMulta() {
+        return multa;
+    }
+
     // Setters para casos especiales
-    public void setMulta(double multa) { this.multa = multa; }
+    public void setMulta(double multa) {
+        this.multa = multa;
+    }
 }

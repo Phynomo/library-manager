@@ -128,10 +128,6 @@ public class LoginDialog extends JDialog {
         for (int i = 0; i < usua_VALIDOS.length; i++) {
             if (usua_VALIDOS[i].equals(usuario) && contra_VALIDAS[i].equals(password)) {
                 loginExitoso = true;
-                JOptionPane.showMessageDialog(this, 
-                    "Bienvenido al Sistema, " + usuario, 
-                    "Acceso Autorizado", 
-                    JOptionPane.INFORMATION_MESSAGE);
                 dispose();
                 return;
             }

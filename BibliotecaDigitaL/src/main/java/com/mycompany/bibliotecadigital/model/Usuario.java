@@ -10,6 +10,7 @@ public abstract class Usuario implements Serializable {
     protected String identificacion;
     protected int limitePrestamos;
     protected int diasPrestamo;
+    protected boolean activo;
 
     public Usuario(String nombre, String email, String identificacion, int limitePrestamos, int diasPrestamo) {
         this.nombre = nombre;
@@ -17,6 +18,7 @@ public abstract class Usuario implements Serializable {
         this.identificacion = identificacion;
         this.limitePrestamos = limitePrestamos;
         this.diasPrestamo = diasPrestamo;
+        this.activo = true;
     }
 
     // Métodos abstractos según las instrucciones
@@ -29,12 +31,14 @@ public abstract class Usuario implements Serializable {
     public String getIdentificacion() { return identificacion; }
     public int getLimitePrestamos() { return limitePrestamos; }
     public int getDiasPrestamo() { return diasPrestamo; }
+    public boolean getActivo() { return activo; }
 
     // Setters
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setEmail(String email) { this.email = email; }
     //se agregaron dos contructores mas para setear el id y carrera
     public void setId(String identificacion) { this.identificacion = identificacion; }
+    public void  setActivo(boolean activo) { this.activo = activo; }
   
     
     // Método equals para comparación en listas

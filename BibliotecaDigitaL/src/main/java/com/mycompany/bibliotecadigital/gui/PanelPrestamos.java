@@ -11,10 +11,11 @@ public class PanelPrestamos extends JPanel {
     private GestorBiblioteca gestor;
     private JTable tablapresta;
     private DefaultTableModel modelotabla;
-    private JTextField txtidusuario, txtidrecurso;
     private JTextField txtbuscusua;
     private SimpleDateFormat formatofecha = new SimpleDateFormat("dd/MM/yyyy");
     private JTextField txtisrecurso;
+    private JComboBox<String> cmbUsuarios, cmbRecursos;
+    private JCheckBox chckbxActivo;
 
     public PanelPrestamos(GestorBiblioteca gestor) {
         this.gestor = gestor;
@@ -31,25 +32,29 @@ public class PanelPrestamos extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
+        // --- Usuario ---
         gbc.gridx = 0; gbc.gridy = 0;
-        panelNuevoPrestamo.add(new JLabel("ID Usuario:"), gbc);
+        panelNuevoPrestamo.add(new JLabel("Usuario:"), gbc);
         gbc.gridx = 1;
-        txtidusuario = new JTextField(15);
-        panelNuevoPrestamo.add(txtidusuario, gbc);
+        cmbUsuarios = new JComboBox<>();
+        cargarUsuarios();
+        panelNuevoPrestamo.add(cmbUsuarios, gbc);
 
         gbc.gridx = 2;
-        JButton btnBuscarUsuario = new JButton("Buscar Usuario");
+        JButton btnBuscarUsuario = new JButton("Más información");
         btnBuscarUsuario.addActionListener(this::buscarUsuario);
         panelNuevoPrestamo.add(btnBuscarUsuario, gbc);
 
+        // --- Recurso ---
         gbc.gridx = 0; gbc.gridy = 1;
-        panelNuevoPrestamo.add(new JLabel("ID Recurso:"), gbc);
+        panelNuevoPrestamo.add(new JLabel("Recurso:"), gbc);
         gbc.gridx = 1;
-        txtidrecurso = new JTextField(15);
-        panelNuevoPrestamo.add(txtidrecurso, gbc);
+        cmbRecursos = new JComboBox<>();
+        cargarRecursos();
+        panelNuevoPrestamo.add(cmbRecursos, gbc);
 
         gbc.gridx = 2;
-        JButton btnBuscarRecurso = new JButton("Buscar Recurso");
+        JButton btnBuscarRecurso = new JButton("Más información");
         btnBuscarRecurso.addActionListener(this::buscarRecurso);
         panelNuevoPrestamo.add(btnBuscarRecurso, gbc);
 
@@ -57,7 +62,9 @@ public class PanelPrestamos extends JPanel {
         JPanel panelBotones = new JPanel();
         JButton btnPrestar = new JButton("Realizar Préstamo");
         JButton btnDevolver = new JButton("Procesar Devolución");
-        JButton btnActualizar = new JButton("Actualizar Lista");
+        JButton btnActualizar = new JButton("Actualizar");
+        chckbxActivo  = new JCheckBox("Solo activos");
+        chckbxActivo.setSelected(true);
 
         btnPrestar.addActionListener(this::realizarPrestamo);
         btnDevolver.addActionListener(this::procesarDevolucion);
@@ -66,6 +73,7 @@ public class PanelPrestamos extends JPanel {
         panelBotones.add(btnPrestar);
         panelBotones.add(btnDevolver);
         panelBotones.add(btnActualizar);
+        panelBotones.add(chckbxActivo);
 
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 3;
         panelNuevoPrestamo.add(panelBotones, gbc);
@@ -96,9 +104,28 @@ public class PanelPrestamos extends JPanel {
         add(panelBusqueda, BorderLayout.EAST);
     }
 
+    private void cargarUsuarios() {
+        cmbUsuarios.removeAllItems();
+        for (Usuario u : gestor.getusuarios()) {
+            if (u.getActivo()) {
+                cmbUsuarios.addItem(u.getIdentificacion() + " - " + u.getNombre());
+            }
+        }
+    }
+
+    private void cargarRecursos() {
+        cmbRecursos.removeAllItems();
+        for (Recurso r : gestor.getcatalogo()) {
+            cmbRecursos.addItem(r.getIdRecurso() + " - " + r.getTitulo());
+        }
+    }
+
     private void realizarPrestamo(ActionEvent e) {
-        String idUsuario = txtidusuario.getText().trim();
-        String idRecurso = txtidrecurso.getText().trim();
+        String usuarioSel = (String) cmbUsuarios.getSelectedItem();
+        String recursoSel = (String) cmbRecursos.getSelectedItem();
+
+        String idUsuario = usuarioSel.split(" - ")[0];
+        String idRecurso = recursoSel.split(" - ")[0];
 
         if (idUsuario.isEmpty() || idRecurso.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe ingresar ID de usuario y recurso");
@@ -107,8 +134,8 @@ public class PanelPrestamos extends JPanel {
 
         if (gestor.realizarPrestamo(idUsuario, idRecurso)) {
             JOptionPane.showMessageDialog(this, "Prestamo realizado exitosamente");
-            txtidusuario.setText("");
-            txtidrecurso.setText("");
+            cmbUsuarios.setSelectedIndex(-1);
+            cmbRecursos.setSelectedIndex(-1);
             cargarPrestamos();
         } else {
             JOptionPane.showMessageDialog(this, "Error al realizar prestamo:\n" +
@@ -119,8 +146,16 @@ public class PanelPrestamos extends JPanel {
     }
 
     private void procesarDevolucion(ActionEvent e) {
-        String idUsuario = txtidusuario.getText().trim();
-        String idRecurso = txtidrecurso.getText().trim();
+        int filaSeleccionada = tablapresta.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione un prestamo de la tabla para poder realizar la revolución",
+                    "Sin Selección", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String idUsuario = (String) modelotabla.getValueAt(filaSeleccionada, 0);
+        String idRecurso = (String) modelotabla.getValueAt(filaSeleccionada, 1);
 
         if (idUsuario.isEmpty() || idRecurso.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe ingresar ID de usuario y recurso");
@@ -129,8 +164,8 @@ public class PanelPrestamos extends JPanel {
 
         if (gestor.procesarDevolucion(idUsuario, idRecurso)) {
             JOptionPane.showMessageDialog(this, "Devolución procesada exitosamente");
-            txtidusuario.setText("");
-            txtidrecurso.setText("");
+            cmbUsuarios.setSelectedIndex(-1);
+            cmbRecursos.setSelectedIndex(-1);
             cargarPrestamos();
         } else {
             JOptionPane.showMessageDialog(this, "Error: No se encontro el prestamo activo");
@@ -138,7 +173,9 @@ public class PanelPrestamos extends JPanel {
     }
 
     private void buscarUsuario(ActionEvent e) {
-        String id = txtidusuario.getText().trim();
+        String usuarioSel = (String) cmbUsuarios.getSelectedItem();
+
+        String id = usuarioSel.split(" - ")[0];
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Ingrese un ID de usuario");
             return;
@@ -157,7 +194,10 @@ public class PanelPrestamos extends JPanel {
     }
 
     private void buscarRecurso(ActionEvent e) {
-        String id = txtidrecurso.getText().trim();
+        String recursoSel = (String) cmbRecursos.getSelectedItem();
+
+        String txtidrecurso = recursoSel.split(" - ")[0];
+        String id = txtidrecurso.trim();
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Ingrese un ID de recurso");
             return;
@@ -190,16 +230,19 @@ public class PanelPrestamos extends JPanel {
     }
 
     private void cargarPrestamos() {
+        cargarRecursos();
+        cargarUsuarios();
+
         modelotabla.setRowCount(0);
         for (Prestamo prestamo : gestor.getprestamos()) {
-            if (prestamo.isActivo()) {
+            if (!chckbxActivo.isSelected() || prestamo.isActivo()) {
                 agregarFilaPrestamo(prestamo);
             }
         }
     }
 
     private void agregarFilaPrestamo(Prestamo prestamo) {
-        String estado = prestamo.estaVencido() ? "VENCIDO" : "ACTIVO";
+        String estado = prestamo.estado();
         long diferenciaMilis = prestamo.getFechaVencimiento().getTime() - System.currentTimeMillis();
         int diasRestantes = (int) (diferenciaMilis / (1000 * 60 * 60 * 24));
         
