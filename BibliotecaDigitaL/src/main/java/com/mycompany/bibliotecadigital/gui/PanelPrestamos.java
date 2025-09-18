@@ -229,7 +229,6 @@ public class PanelPrestamos extends JPanel {
     }
 
     private void cargarPrestamos() {
-        System.out.println("Cargando prestamos...");
         cargarRecursos();
         cargarUsuarios();
 
