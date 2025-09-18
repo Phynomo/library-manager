@@ -205,4 +205,34 @@ public void eliminarUsuario(String id) {
     public List<Recurso> getcatalogo() { return catalogo; }
     public List<Prestamo> getprestamos() { return prestamos; }
     public List<Prestamo> gethistorialpresta() { return historialpresta; }
+
+    public boolean eliminarRecurso(String id) {
+         Recurso recurso = buscarPorId(id);
+        if (recurso != null) {
+            boolean eliminado = catalogo.remove(recurso);
+            if (eliminado) {
+                ArchivoCatalogo.guardarCatalogo(catalogo); // actualizar archivo
+            }
+            return eliminado;
+        }
+        return false;}
+
+    public Recurso buscarPorId(String id) {
+        return catalogo.stream()
+                .filter(r -> r.getIdRecurso().equals(id))
+                .findFirst()
+                .orElse(null);}
+    
+    
+
+   public boolean editarRecurso(String id, Recurso recursoEditado) {
+    for (int i = 0; i < catalogo.size(); i++) {
+        if (catalogo.get(i).getIdRecurso().equals(id)) {
+            catalogo.set(i, recursoEditado); // reemplaza el recurso existente
+            return true;
+        }
+    }
+    return false; // si no se encontró
+}
+
 }
