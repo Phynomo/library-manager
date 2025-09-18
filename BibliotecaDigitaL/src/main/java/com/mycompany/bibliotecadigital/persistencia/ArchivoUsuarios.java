@@ -12,7 +12,6 @@ public class ArchivoUsuarios {
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(ARCHIVO_USUARIOS))) {
             oos.writeObject(usuarios);
-            System.out.println("Usuarios guardados en " + ARCHIVO_USUARIOS);
         } catch (IOException e) {
             System.err.println("Error al guardar usuarios: " + e.getMessage());
         }

@@ -26,7 +26,6 @@ public class ArchivoCatalogo {
                 );
                 pw.println(linea);
             }
-            System.out.println("Catálogo guardado en " + ARCHIVO_CATALOGO);
         } catch (IOException e) {
             System.err.println("Error al guardar catálogo: " + e.getMessage());
         }

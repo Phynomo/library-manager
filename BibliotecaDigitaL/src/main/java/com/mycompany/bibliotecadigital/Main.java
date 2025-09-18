@@ -12,7 +12,6 @@ public class Main {
                 try {
                     VentanaPrincipal ventana = new VentanaPrincipal();
                     ventana.setVisible(true);
-                    System.out.println("Sistema de Biblioteca Digital iniciado correctamente");
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.err.println("Error al iniciar la aplicacion: " + e.getMessage());

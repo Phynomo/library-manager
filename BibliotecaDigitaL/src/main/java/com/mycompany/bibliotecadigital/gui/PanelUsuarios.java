@@ -32,8 +32,6 @@ public class PanelUsuarios extends JPanel {
         txtbuscar = new JTextField(20);
         JButton btnBuscar = new JButton("🔍 Buscar");
         JButton btnMostrarTodos = new JButton("📋 Mostrar Todos");
-        JButton btnEliminar = new JButton("Eliminar Usuario");
-        JButton btnModificar = new JButton("✎ Modificar Usuario");
 
         btnBuscar.addActionListener(this::buscarUsuarios);
         btnMostrarTodos.addActionListener(e -> cargarUsuarios());

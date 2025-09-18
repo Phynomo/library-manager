@@ -278,6 +278,7 @@ public class PanelRecursos extends JPanel {
 
     private void cargarRecursos() {
         modelotab.setRowCount(0);
+        System.out.println("Total recursos: " + gestor.getcatalogo().size());
         for (Recurso recurso : gestor.getcatalogo()) {
             agregarFilaRecurso(recurso);
         }

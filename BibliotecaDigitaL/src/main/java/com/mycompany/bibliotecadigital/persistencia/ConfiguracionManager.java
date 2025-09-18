@@ -33,7 +33,6 @@ public class ConfiguracionManager {
     public static void cargarConfiguracion() {
         try (FileInputStream fis = new FileInputStream(ARCHIVO_CONFIG)) {
             propiedades.load(fis);
-            System.out.println("Configuración cargada desde " + ARCHIVO_CONFIG);
         } catch (FileNotFoundException e) {
             System.out.println("Archivo de configuración no encontrado, creando uno nuevo...");
             crearConfiguracionDefault();
@@ -55,7 +54,6 @@ public class ConfiguracionManager {
     public static void guardarConfiguracion() {
         try (FileOutputStream fos = new FileOutputStream(ARCHIVO_CONFIG)) {
             propiedades.store(fos, "Configuración del Sistema de Biblioteca Digital");
-            System.out.println("Configuración guardada en " + ARCHIVO_CONFIG);
         } catch (IOException e) {
             System.err.println("Error al guardar configuración: " + e.getMessage());
         }

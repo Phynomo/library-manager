@@ -13,7 +13,6 @@ public class PanelPrestamos extends JPanel {
     private DefaultTableModel modelotabla;
     private JTextField txtbuscusua;
     private SimpleDateFormat formatofecha = new SimpleDateFormat("dd/MM/yyyy");
-    private JTextField txtisrecurso;
     private JComboBox<String> cmbUsuarios, cmbRecursos;
     private JCheckBox chckbxActivo;
 
@@ -230,6 +229,7 @@ public class PanelPrestamos extends JPanel {
     }
 
     private void cargarPrestamos() {
+        System.out.println("Cargando prestamos...");
         cargarRecursos();
         cargarUsuarios();
 

@@ -133,21 +133,12 @@ public class VentanaPrincipal extends JFrame {
         gestor.agregarRecurso(new LibroDigital("Effective Java", "LD002", "Spring Team", 
             "978-2468013570", "Arreglos en Java", 2023, "Frameworks", 
             "file:///C:/Users/User/Downloads/Clase%2010%20-%20Arreglos%20-%20Parte%20II-1.pdf", "PDF", 25.8));
- gestor.agregarRecurso(new LibroDigital("Licenciatura en Mercadotecnia", "LD002", "Diego Monferrer Tirado", 
+
+ gestor.agregarRecurso(new LibroDigital("Licenciatura en Mercadotecnia", "LD008", "Diego Monferrer Tirado", 
             "456-0000000000", "Fundamentos del Marketing", 2023, "Frameworks", 
             "https://drive.google.com/file/d/153-PXxCP-O0pu105IgozE1HPbeWJDd5J/view?pli=1", "HTML", 25.8));
 
         gestor.agregarRecurso(new Audiobook("The Pragmatic Programmer", "AB001", "Andy Hunt & Dave Thomas", 
             "978-0201616224", "Addison-Wesley", 1999, "Desarrollo de Software", "Various Narrators", 540));
-
-        
-        gestor.realizarPrestamo("EST001", "LF001"); 
-        gestor.realizarPrestamo("PROF001", "LF002"); 
-        gestor.realizarPrestamo("EST002", "AB001"); 
-
-        System.out.println("✅ Datos de prueba cargados exitosamente:");
-        System.out.println("   - " + gestor.getusuarios().size() + " usuarios registrados");
-        System.out.println("   - " + gestor.getcatalogo().size() + " recursos en catalogo");  
-        System.out.println("   - " + gestor.getprestamos().size() + " prestamos activos");
     }
 }

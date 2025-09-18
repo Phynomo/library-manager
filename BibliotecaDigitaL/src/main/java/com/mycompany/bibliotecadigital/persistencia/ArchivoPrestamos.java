@@ -12,7 +12,6 @@ public class ArchivoPrestamos {
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(ARCHIVO_PRESTAMOS))) {
             oos.writeObject(prestamos);
-            System.out.println("Préstamos guardados en " + ARCHIVO_PRESTAMOS);
         } catch (IOException e) {
             System.err.println("Error al guardar préstamos: " + e.getMessage());
         }

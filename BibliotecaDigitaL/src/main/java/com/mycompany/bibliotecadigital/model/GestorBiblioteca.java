@@ -20,10 +20,6 @@ public class GestorBiblioteca {
         this.historialpresta = new ArrayList<>();
         this.listaespera = new ListaEspera();
         this.catalogo = new ArrayList<>();
-        
-        
-        List<String> lineasCatalogo = ArchivoCatalogo.cargarCatalogo();
-       
     }
 //metodo para eliminar usuario de la lista
 public void eliminarUsuario(String id) {
@@ -119,7 +115,6 @@ public void eliminarUsuario(String id) {
             } else {
               
                 listaespera.agregarAEspera(idRecurso, usuario);
-                System.out.println("Recurso no disponible. Usuario agregado a lista de espera.");
                 return false;
             }
         }
