@@ -133,8 +133,7 @@ public class VentanaPrincipal extends JFrame {
         gestor.agregarRecurso(new LibroDigital("Effective Java", "LD002", "Spring Team", 
             "978-2468013570", "Arreglos en Java", 2023, "Frameworks", 
             "file:///C:/Users/User/Downloads/Clase%2010%20-%20Arreglos%20-%20Parte%20II-1.pdf", "PDF", 25.8));
-
- gestor.agregarRecurso(new LibroDigital("Licenciatura en Mercadotecnia", "LD008", "Diego Monferrer Tirado", 
+        gestor.agregarRecurso(new LibroDigital("Licenciatura en Mercadotecnia", "LD008", "Diego Monferrer Tirado", 
             "456-0000000000", "Fundamentos del Marketing", 2023, "Frameworks", 
             "https://drive.google.com/file/d/153-PXxCP-O0pu105IgozE1HPbeWJDd5J/view?pli=1", "HTML", 25.8));
 

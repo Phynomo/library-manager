@@ -19,7 +19,7 @@ public class GestorBiblioteca {
         this.prestamos = ArchivoPrestamos.cargarPrestamos();
         this.historialpresta = new ArrayList<>();
         this.listaespera = new ListaEspera();
-        this.catalogo = new ArrayList<>();
+        this.catalogo = ArchivoCatalogo.cargarCatalogo();
     }
 //metodo para eliminar usuario de la lista
 public void eliminarUsuario(String id) {

@@ -6,45 +6,28 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class ArchivoCatalogo {
-    private static final String ARCHIVO_CATALOGO = "catalogo.txt";
-    
+    private static final String ARCHIVO_CATALOGO = "catalogo.dat";
+
     public static void guardarCatalogo(List<Recurso> catalogo) {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(ARCHIVO_CATALOGO))) {
-            pw.println("# Catálogo de Biblioteca Digital");
-            pw.println("# Formato: ID|Título|Autor|ISBN|Editorial|Año|Categoría|Tipo");
-            
-            for (Recurso recurso : catalogo) {
-                String linea = String.format("%s|%s|%s|%s|%s|%d|%s|%s",
-                    recurso.getIdRecurso(),
-                    recurso.getTitulo(),
-                    recurso.getAutor(),
-                    recurso.getIsbn(),
-                    recurso.getEditorial(),
-                    recurso.getAño(),
-                    recurso.getCategoria(),
-                    recurso.getClass().getSimpleName()
-                );
-                pw.println(linea);
-            }
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream(ARCHIVO_CATALOGO))) {
+            oos.writeObject(catalogo);
         } catch (IOException e) {
-            System.err.println("Error al guardar catálogo: " + e.getMessage());
+            System.err.println("Error al guardar catalogo: " + e.getMessage());
         }
     }
-    
-    public static List<String> cargarCatalogo() {
-        List<String> lineas = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(ARCHIVO_CATALOGO))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                if (!linea.startsWith("#") && !linea.trim().isEmpty()) {
-                    lineas.add(linea);
-                }
-            }
+
+    @SuppressWarnings("unchecked")
+    public static List<Recurso> cargarCatalogo() {
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream(ARCHIVO_CATALOGO))) {
+            return (List<Recurso>) ois.readObject();
         } catch (FileNotFoundException e) {
-            System.out.println("Archivo de catálogo no encontrado");
-        } catch (IOException e) {
-            System.err.println("Error al cargar catálogo: " + e.getMessage());
+            System.out.println("Archivo de catalogo, creando lista nueva");
+            return new ArrayList<>();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error al cargar catalogo: " + e.getMessage());
+            return new ArrayList<>();
         }
-        return lineas;
     }
 }
