@@ -1,6 +1,7 @@
 package com.mycompany.bibliotecadigital.model;
 
 import com.mycompany.bibliotecadigital.persistencia.*;
+
 import java.util.*;
 
 public class GestorBiblioteca {
@@ -13,7 +14,7 @@ public class GestorBiblioteca {
     public GestorBiblioteca() {
         cargarDatos();
     }
-    
+
     private void cargarDatos() {
         this.usuarios = ArchivoUsuarios.cargarUsuarios();
         this.prestamos = ArchivoPrestamos.cargarPrestamos();
@@ -21,25 +22,26 @@ public class GestorBiblioteca {
         this.listaespera = new ListaEspera();
         this.catalogo = ArchivoCatalogo.cargarCatalogo();
     }
-//metodo para eliminar usuario de la lista
-public void eliminarUsuario(String id) {
-    Usuario encontrado = buscarUsuario(id);
-    if (encontrado != null) {
-        usuarios.remove(encontrado);
+
+    //metodo para eliminar usuario de la lista
+    public void eliminarUsuario(String id) {
+        Usuario encontrado = buscarUsuario(id);
+        if (encontrado != null) {
+            usuarios.remove(encontrado);
+        }
     }
-}
-    
+
     public boolean registrarUsuario(Usuario usuario) {
-       
+
         for (Usuario u : usuarios) {
             if (u.getIdentificacion().equals(usuario.getIdentificacion())) {
-                return false; 
+                return false;
             }
         }
-        
+
         boolean agregado = usuarios.add(usuario);
         if (agregado) {
-            ArchivoUsuarios.guardarUsuarios(usuarios); 
+            ArchivoUsuarios.guardarUsuarios(usuarios);
         }
         return agregado;
     }
@@ -51,18 +53,18 @@ public void eliminarUsuario(String id) {
                 .orElse(null);
     }
 
-  
+
     public boolean agregarRecurso(Recurso recurso) {
-        
+
         for (Recurso r : catalogo) {
             if (r.getIdRecurso().equals(recurso.getIdRecurso())) {
-                return false; 
+                return false;
             }
         }
-        
+
         boolean agregado = catalogo.add(recurso);
         if (agregado) {
-            ArchivoCatalogo.guardarCatalogo(catalogo); 
+            ArchivoCatalogo.guardarCatalogo(catalogo);
         }
         return agregado;
     }
@@ -70,18 +72,18 @@ public void eliminarUsuario(String id) {
     public List<Recurso> buscarRecursos(String criterio) {
         List<Recurso> resultados = new ArrayList<>();
         String criterioBajo = criterio.toLowerCase();
-        
+
         for (Recurso r : catalogo) {
             if (r.getTitulo().toLowerCase().contains(criterioBajo) ||
-                r.getAutor().toLowerCase().contains(criterioBajo) ||
-                r.getCategoria().toLowerCase().contains(criterioBajo)) {
+                    r.getAutor().toLowerCase().contains(criterioBajo) ||
+                    r.getCategoria().toLowerCase().contains(criterioBajo)) {
                 resultados.add(r);
             }
         }
         return resultados;
     }
 
-    
+
     public boolean realizarPrestamo(String idUsuario, String idRecurso) {
         Usuario usuario = buscarUsuario(idUsuario);
         Recurso recurso = buscarRecursoPorId(idRecurso);
@@ -90,7 +92,7 @@ public void eliminarUsuario(String id) {
             return false;
         }
 
-       
+
         long prestamosActivos = prestamos.stream()
                 .filter(p -> p.isActivo() && p.getUsuario().equals(usuario))
                 .count();
@@ -99,21 +101,21 @@ public void eliminarUsuario(String id) {
             return false;
         }
 
-       
+
         if (recurso instanceof Prestable) {
             Prestable prestable = (Prestable) recurso;
             if (prestable.estaDisponible()) {
                 prestable.prestar(usuario);
                 Prestamo prestamo = new Prestamo(usuario, recurso);
                 prestamos.add(prestamo);
-                
-                
+
+
                 ArchivoPrestamos.guardarPrestamos(prestamos);
                 ArchivoCatalogo.guardarCatalogo(catalogo);
-                
+
                 return true;
             } else {
-              
+
                 listaespera.agregarAEspera(idRecurso, usuario);
                 return false;
             }
@@ -123,9 +125,9 @@ public void eliminarUsuario(String id) {
 
     public boolean procesarDevolucion(String idUsuario, String idRecurso) {
         Prestamo prestamo = prestamos.stream()
-                .filter(p -> p.isActivo() && 
-                           p.getUsuario().getIdentificacion().equals(idUsuario) &&
-                           p.getRecurso().getIdRecurso().equals(idRecurso))
+                .filter(p -> p.isActivo() &&
+                        p.getUsuario().getIdentificacion().equals(idUsuario) &&
+                        p.getRecurso().getIdRecurso().equals(idRecurso))
                 .findFirst()
                 .orElse(null);
 
@@ -135,25 +137,23 @@ public void eliminarUsuario(String id) {
                 ((Prestable) prestamo.getRecurso()).devolver();
             }
             historialpresta.add(prestamo);
-            
-          
+
+
             ArchivoPrestamos.guardarPrestamos(prestamos);
             ArchivoCatalogo.guardarCatalogo(catalogo);
-            
-           
-            procesarListaEspera(idRecurso);
-            
+
             return true;
         }
         return false;
     }
 
-    
+
     private void procesarListaEspera(String idRecurso) {
-        Usuario siguienteUsuario = listaespera.siguienteEnEspera(idRecurso);
-        if (siguienteUsuario != null) {
-            System.out.println("Notificando a " + siguienteUsuario.getNombre() + 
-                             " que el recurso " + idRecurso + " está disponible.");
+        EntradaEspera entrada = listaespera.siguienteEnEspera(idRecurso);
+        if (entrada != null) {
+            Usuario usuario = entrada.getUsuario();
+            System.out.println("Notificando a " + usuario.getNombre() +
+                    " que el recurso " + idRecurso + " está disponible.");
         }
     }
 
@@ -170,11 +170,11 @@ public void eliminarUsuario(String id) {
                 .orElse(null);
     }
 
-  
-    public ListaEspera getListaEspera() { 
-        return listaespera; 
+
+    public ListaEspera getListaEspera() {
+        return listaespera;
     }
-    
+
     public boolean agregarAListaEspera(String idRecurso, String idUsuario) {
         Usuario usuario = buscarUsuario(idUsuario);
         if (usuario != null) {
@@ -183,11 +183,11 @@ public void eliminarUsuario(String id) {
         }
         return false;
     }
-    
-    public List<Usuario> verListaEsperaRecurso(String idRecurso) {
+
+    public List<EntradaEspera> verListaEsperaRecurso(String idRecurso) {
         return listaespera.verListaEspera(idRecurso);
     }
-    
+
 
     public void guardartodosdatos() {
         ArchivoUsuarios.guardarUsuarios(usuarios);
@@ -195,14 +195,25 @@ public void eliminarUsuario(String id) {
         ArchivoPrestamos.guardarPrestamos(prestamos);
     }
 
-    
-    public List<Usuario> getusuarios() { return usuarios; }
-    public List<Recurso> getcatalogo() { return catalogo; }
-    public List<Prestamo> getprestamos() { return prestamos; }
-    public List<Prestamo> gethistorialpresta() { return historialpresta; }
+
+    public List<Usuario> getusuarios() {
+        return usuarios;
+    }
+
+    public List<Recurso> getcatalogo() {
+        return catalogo;
+    }
+
+    public List<Prestamo> getprestamos() {
+        return prestamos;
+    }
+
+    public List<Prestamo> gethistorialpresta() {
+        return historialpresta;
+    }
 
     public boolean eliminarRecurso(String id) {
-         Recurso recurso = buscarPorId(id);
+        Recurso recurso = buscarPorId(id);
         if (recurso != null) {
             boolean eliminado = catalogo.remove(recurso);
             if (eliminado) {
@@ -210,24 +221,25 @@ public void eliminarUsuario(String id) {
             }
             return eliminado;
         }
-        return false;}
+        return false;
+    }
 
     public Recurso buscarPorId(String id) {
         return catalogo.stream()
                 .filter(r -> r.getIdRecurso().equals(id))
                 .findFirst()
-                .orElse(null);}
-    
-    
-
-   public boolean editarRecurso(String id, Recurso recursoEditado) {
-    for (int i = 0; i < catalogo.size(); i++) {
-        if (catalogo.get(i).getIdRecurso().equals(id)) {
-            catalogo.set(i, recursoEditado); // reemplaza el recurso existente
-            return true;
-        }
+                .orElse(null);
     }
-    return false; // si no se encontró
-}
+
+
+    public boolean editarRecurso(String id, Recurso recursoEditado) {
+        for (int i = 0; i < catalogo.size(); i++) {
+            if (catalogo.get(i).getIdRecurso().equals(id)) {
+                catalogo.set(i, recursoEditado); // reemplaza el recurso existente
+                return true;
+            }
+        }
+        return false; // si no se encontró
+    }
 
 }

@@ -3,48 +3,52 @@ package com.mycompany.bibliotecadigital.model;
 import java.util.*;
 
 public class ListaEspera {
-    private Map<String, Queue<Usuario>> listasPorRecurso;
-    
+    private Map<String, Queue<EntradaEspera>> listasPorRecurso;
+
     public ListaEspera() {
         this.listasPorRecurso = new HashMap<>();
     }
-    
-    public void agregarAEspera(String idRecurso, Usuario usuario) {
-        // Crear cola si no existe
+
+    public boolean agregarAEspera(String idRecurso, Usuario usuario) {
         listasPorRecurso.putIfAbsent(idRecurso, new LinkedList<>());
-        
-        Queue<Usuario> cola = listasPorRecurso.get(idRecurso);
-        
-        // Verificar que el usuario no esté ya en la lista
-        if (!cola.contains(usuario)) {
-            cola.offer(usuario);
-            System.out.println("Usuario " + usuario.getNombre() + " agregado a lista de espera para recurso " + idRecurso);
+        Queue<EntradaEspera> cola = listasPorRecurso.get(idRecurso);
+
+        // Verificar duplicados
+        boolean yaExiste = cola.stream()
+                .anyMatch(e -> e.getUsuario().equals(usuario));
+        if (yaExiste) {
+            return false;
         }
+
+        cola.offer(new EntradaEspera(usuario, new Date()));
+        return true;
     }
-    
-    public Usuario siguienteEnEspera(String idRecurso) {
-        Queue<Usuario> cola = listasPorRecurso.get(idRecurso);
+
+    public EntradaEspera siguienteEnEspera(String idRecurso) {
+        Queue<EntradaEspera> cola = listasPorRecurso.get(idRecurso);
         return cola != null ? cola.poll() : null;
     }
-    
-    public List<Usuario> verListaEspera(String idRecurso) {
-        Queue<Usuario> cola = listasPorRecurso.get(idRecurso);
-        return cola != null ? new ArrayList<>(cola) : new ArrayList<>();
+
+    public List<EntradaEspera> verListaEspera(String idRecurso) {
+        System.out.println(idRecurso);
+        System.out.println(listasPorRecurso);
+        Queue<EntradaEspera> cola = listasPorRecurso.get(idRecurso);
+        return cola != null ? new ArrayList<>(cola) : Collections.emptyList();
     }
-    
+
+    public boolean removerDeEspera(String idRecurso, Usuario usuario) {
+        Queue<EntradaEspera> cola = listasPorRecurso.get(idRecurso);
+        return cola != null && cola.removeIf(e -> e.getUsuario().equals(usuario));
+    }
+
     public int getTamañoLista(String idRecurso) {
-        Queue<Usuario> cola = listasPorRecurso.get(idRecurso);
+        Queue<EntradaEspera> cola = listasPorRecurso.get(idRecurso);
         return cola != null ? cola.size() : 0;
     }
-    
-    public boolean removerDeEspera(String idRecurso, Usuario usuario) {
-        Queue<Usuario> cola = listasPorRecurso.get(idRecurso);
-        return cola != null && cola.remove(usuario);
-    }
-    
+
     public Map<String, Integer> getEstadisticasEspera() {
         Map<String, Integer> estadisticas = new HashMap<>();
-        for (Map.Entry<String, Queue<Usuario>> entry : listasPorRecurso.entrySet()) {
+        for (Map.Entry<String, Queue<EntradaEspera>> entry : listasPorRecurso.entrySet()) {
             estadisticas.put(entry.getKey(), entry.getValue().size());
         }
         return estadisticas;

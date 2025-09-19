@@ -166,6 +166,13 @@ public class PanelPrestamos extends JPanel {
             cmbUsuarios.setSelectedIndex(-1);
             cmbRecursos.setSelectedIndex(-1);
             cargarPrestamos();
+
+            var Esper = gestor.verListaEsperaRecurso(idRecurso);
+            System.out.println(Esper);
+            if (!Esper.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Recurso con lista de espera, revisa esta");
+            }
+
         } else {
             JOptionPane.showMessageDialog(this, "Error: No se encontro el prestamo activo");
         }

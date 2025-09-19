@@ -16,6 +16,7 @@ public class PanelUsuarios extends JPanel {
     private JComboBox<String> cmbtipousua;
     private JTextField txtbuscar;
     private JLabel lblextra;
+    private JTextArea infoArea;
 
     public PanelUsuarios(GestorBiblioteca gestor) {
         this.gestor = gestor;
@@ -135,7 +136,7 @@ public class PanelUsuarios extends JPanel {
         gbc.gridy = 5;
         gbc.gridwidth = 2; // Ocupa 2 columnas
         gbc.fill = GridBagConstraints.HORIZONTAL; // Permite que el JTextArea se estire
-        JTextArea infoArea = new JTextArea(3, 25);
+        infoArea = new JTextArea(3, 25);
         infoArea.setEditable(false);
         infoArea.setBackground(panel.getBackground());
         infoArea.setFont(infoArea.getFont().deriveFont(Font.ITALIC));
@@ -192,14 +193,17 @@ public class PanelUsuarios extends JPanel {
             case "Estudiante":
                 lblextra.setText("Carrera:");
                 txtextra.setToolTipText("Ej: Ingenieria en Sistemas");
+                infoArea.setText("Estudiante: Max. 3 libros por 14 dias");
                 break;
             case "Profesor":
                 lblextra.setText("Departamento:");
                 txtextra.setToolTipText("Ej: Departamento de Informatica o Matematicas");
+                infoArea.setText("Profeso: Max. 5 libros por 30 dias");
                 break;
             case "Administrativo":
                 lblextra.setText("Puesto:");
                 txtextra.setToolTipText("Ej: Bibliotecario, Asistente");
+                infoArea.setText("Administrativo: Max. 2 libros por 7 dias");
                 break;
         }
     }

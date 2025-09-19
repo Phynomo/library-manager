@@ -10,6 +10,7 @@ public class VentanaPrincipal extends JFrame {
     private PanelUsuarios panelUsuarios;
     private PanelRecursos panelRecursos;
     private PanelPrestamos panelPrestamos;
+    private PanelListaEspera panelListaEspera;
 
     public VentanaPrincipal() {
         this.gestor = new GestorBiblioteca();
@@ -48,11 +49,13 @@ public class VentanaPrincipal extends JFrame {
         panelUsuarios = new PanelUsuarios(gestor);
         panelRecursos = new PanelRecursos(gestor);  
         panelPrestamos = new PanelPrestamos(gestor);
+        panelListaEspera = new PanelListaEspera(gestor);
         
         pestañas.addTab("👥 Usuarios", panelUsuarios);
         pestañas.addTab("📚 Recursos", panelRecursos);
         pestañas.addTab("📋 Préstamos", panelPrestamos);
-    
+        pestañas.addTab("📋 Lista de espera", panelListaEspera);
+
         JPanel panelEstadisticas = crearPanelEstadisticas();
      
         add(panelEstadisticas, BorderLayout.NORTH);
