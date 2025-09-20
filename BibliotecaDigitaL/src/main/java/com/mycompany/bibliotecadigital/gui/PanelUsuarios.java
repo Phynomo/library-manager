@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 
 public class PanelUsuarios extends JPanel {
@@ -68,103 +69,62 @@ public class PanelUsuarios extends JPanel {
     private JPanel crearPanelRegistro() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Registrar Nuevo Usuario"));
-
+        panel.setPreferredSize(new Dimension(350, 0));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8); // Establece el padding para todos los componentes
-
-        // --- FILA 0: Nombre Completo y Campo ---
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST; // Alinea la etiqueta a la izquierda
-        gbc.fill = GridBagConstraints.NONE; // Asegura que la etiqueta no se estire
-        panel.add(new JLabel("Nombre completo:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Hace que el campo de texto se estire
-        txtnombre = new JTextField(20);
-        panel.add(txtnombre, gbc);
-
-        // --- FILA 1: Email Institucional y Campo ---
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        panel.add(new JLabel("Email institucional:"), gbc);
-
-        gbc.gridx = 1;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtemail = new JTextField(20);
-        panel.add(txtemail, gbc);
 
-        // --- FILA 2: ID de Identificación y Campo ---
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.NONE;
-        panel.add(new JLabel("ID de identificacion:"), gbc);
+        final int[] fila = {0};
 
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtId = new JTextField(20);
-        panel.add(txtId, gbc);
+        // Método auxiliar para evitar código repetido
+        BiConsumer<String, JComponent> addCampo = (label, comp) -> {
+            gbc.gridx = 0;
+            gbc.gridy = fila[0];
+            gbc.weightx = 0;
+            panel.add(new JLabel(label), gbc);
 
-        // --- FILA 3: Tipo de Usuario y ComboBox ---
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.NONE;
-        panel.add(new JLabel("Tipo de usuario:"), gbc);
+            gbc.gridx = 1;
+            gbc.weightx = 1;
+            panel.add(comp, gbc);
 
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+            fila[0]++;
+        };
+
+        // Campos
+        addCampo.accept("Nombre completo:", txtnombre = new JTextField(20));
+        addCampo.accept("Email institucional:", txtemail = new JTextField(20));
+        addCampo.accept("ID de identificación:", txtId = new JTextField(20));
+
         cmbtipousua = new JComboBox<>(new String[]{"Estudiante", "Profesor", "Administrativo"});
         cmbtipousua.addActionListener(this::cambiarTipoUsuario);
-        panel.add(cmbtipousua, gbc);
+        addCampo.accept("Tipo de usuario:", cmbtipousua);
 
-        // --- FILA 4: Campo Extra (Carrera o Departamento) ---
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.NONE;
         lblextra = new JLabel("Carrera:");
-        panel.add(lblextra, gbc);
-
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         txtextra = new JTextField(20);
-        panel.add(txtextra, gbc);
+        addCampo.accept("Carrera/Depto/Puesto:", txtextra);
 
-        // --- FILA 5: Área de Información y Límites del Usuario ---
+        // Área de información (ocupa 2 columnas)
         gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 2; // Ocupa 2 columnas
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Permite que el JTextArea se estire
+        gbc.gridy = fila[0]++;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1;
         infoArea = new JTextArea(3, 25);
         infoArea.setEditable(false);
         infoArea.setBackground(panel.getBackground());
         infoArea.setFont(infoArea.getFont().deriveFont(Font.ITALIC));
-        infoArea.setText("Estudiante: Max. 3 libros por 14 dias");
+        infoArea.setText("Estudiante: Max. 3 libros por 14 días");
         infoArea.setBorder(BorderFactory.createTitledBorder("Límites del Usuario"));
         panel.add(infoArea, gbc);
 
-        // --- ESPACIO VACÍO PARA EMPUJAR LOS BOTONES HACIA ABAJO ---
-        // Esto es crucial para que los botones no se corten.
+        // Panel de botones en columna
         gbc.gridx = 0;
-        gbc.gridy = 6;
+        gbc.gridy = fila[0];
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH; // Se expande en ambas direcciones
-        gbc.weighty = 1.0; // Pesa 1, lo que hace que ocupe todo el espacio extra
-        panel.add(new JPanel(), gbc); // Se añade un panel vacío que se estira
+        gbc.weightx = 1;
+        JPanel panelBotones = new JPanel(new GridLayout(0, 1, 5, 5));
 
-        // --- FILA 7: Panel de Botones ---
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        gbc.gridwidth = 2; // Ocupa ambas columnas para que los botones se centren
-        gbc.fill = GridBagConstraints.NONE; // Desactiva el estiramiento del panel de botones
-        gbc.anchor = GridBagConstraints.CENTER; // Centra el panel en su celda
-        gbc.weighty = 0; // Desactiva el peso vertical para que esta fila no se estire
-
-        // Crear un JPanel interno con FlowLayout para los botones
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-
-        // Declaración e inicialización de los botones (si no están ya a nivel de clase)
         JButton btnRegistrar = new JButton("✅ Registrar Usuario");
         JButton btnLimpiar = new JButton("🔄 Limpiar Campos");
         JButton btnEliminar = new JButton("❌ Des/activar Usuario");
@@ -179,6 +139,7 @@ public class PanelUsuarios extends JPanel {
         panelBotones.add(btnLimpiar);
         panelBotones.add(btnEliminar);
         panelBotones.add(btnModificar);
+
         panel.add(panelBotones, gbc);
 
         cmbtipousua.setSelectedIndex(0);

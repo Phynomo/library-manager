@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.function.BiConsumer;
 
     public class PanelRecursos extends JPanel {
         private GestorBiblioteca gestor;
@@ -21,11 +22,13 @@ import java.awt.event.ActionEvent;
             this.gestor = gestor;
             initComponents();
             cargarRecursos();
+            add(crearPanelFormulario(), BorderLayout.EAST);
         }
 
         private void initComponents() {
             setLayout(new BorderLayout());
 
+            // PANEL SUPERIOR (busqueda)
             JPanel panelSuperior = new JPanel(new FlowLayout());
             panelSuperior.add(new JLabel("Buscar:"));
             txtbusque = new JTextField(20);
@@ -40,6 +43,7 @@ import java.awt.event.ActionEvent;
             panelSuperior.add(btnMostrarTodos);
             add(panelSuperior, BorderLayout.NORTH);
 
+            // TABLA
             String[] columnas = {"ID", "Titulo", "Autor", "Tipo", "ISBN", "Editorial", "Año", "Categoria", "Disponible"};
             modelotab = new DefaultTableModel(columnas, 0);
             tablaRecursos = new JTable(modelotab);
@@ -47,27 +51,55 @@ import java.awt.event.ActionEvent;
             scrollPane.setBorder(BorderFactory.createTitledBorder("Catalogo de Recursos"));
             add(scrollPane, BorderLayout.CENTER);
 
-            JPanel panelFormulario = new JPanel();
-            panelFormulario.setLayout(new BoxLayout(panelFormulario, BoxLayout.Y_AXIS));
+            // PANEL FORMULARIO (lado derecho, alineado con GridBagLayout)
+            add(crearPanelFormulario(), BorderLayout.EAST);
+        }
+
+        private JPanel crearPanelFormulario() {
+            JPanel panelFormulario = new JPanel(new GridBagLayout());
             panelFormulario.setBorder(BorderFactory.createTitledBorder("Agregar / Editar Recurso"));
             panelFormulario.setPreferredSize(new Dimension(300, 0));
 
-            panelFormulario.add(crearCampo("Titulo:", txttitulo = new JTextField()));
-            panelFormulario.add(crearCampo("Autor:", txtautor = new JTextField()));
-            panelFormulario.add(crearCampo("ID:", txtId = new JTextField()));
-            panelFormulario.add(crearCampo("ISBN:", txtisbn = new JTextField()));
-            panelFormulario.add(crearCampo("Editorial:", txtedi = new JTextField()));
-            panelFormulario.add(crearCampo("Año:", txtaño = new JTextField()));
-            panelFormulario.add(crearCampo("Categoría:", txtcate = new JTextField()));
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5); // margenes
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
 
-            cmbrecurso = new JComboBox<>(new String[]{"Libro Fisico", "Libro Digital"});
-            panelFormulario.add(crearCampo("Tipo:", cmbrecurso));
+            // Método auxiliar para añadir fila
+            final int[] fila = {0};
 
-            panelFormulario.add(crearCampo("URL:", txturldescarga = new JTextField()));
-            panelFormulario.add(crearCampo("Formato:", txtformato = new JTextField()));
-            panelFormulario.add(crearCampo("Tamaño (MB):", txttamaño = new JTextField()));
+            BiConsumer<String, JComponent> addCampo = (label, comp) -> {
+                gbc.gridx = 0;
+                gbc.gridy = fila[0];
+                gbc.weightx = 0;
+                panelFormulario.add(new JLabel(label), gbc);
 
-            JPanel panelBotones = new JPanel();
+                gbc.gridx = 1;
+                gbc.weightx = 1;
+                panelFormulario.add(comp, gbc);
+
+                fila[0]++;
+            };
+
+            // Campos
+            addCampo.accept("Titulo:", txttitulo = new JTextField());
+            addCampo.accept("Autor:", txtautor = new JTextField());
+            addCampo.accept("ID:", txtId = new JTextField());
+            addCampo.accept("ISBN:", txtisbn = new JTextField());
+            addCampo.accept("Editorial:", txtedi = new JTextField());
+            addCampo.accept("Año:", txtaño = new JTextField());
+            addCampo.accept("Categoría:", txtcate = new JTextField());
+            addCampo.accept("Tipo:", cmbrecurso = new JComboBox<>(new String[] { "Libro Fisico", "Libro Digital" }));
+            addCampo.accept("URL:", txturldescarga = new JTextField());
+            addCampo.accept("Formato:", txtformato = new JTextField());
+            addCampo.accept("Tamaño (MB):", txttamaño = new JTextField());
+
+            // Panel de botones (ocupa toda la fila)
+            gbc.gridx = 0;
+            gbc.gridy = fila[0];
+            gbc.gridwidth = 2;
+            gbc.weightx = 1;
+            JPanel panelBotones = new JPanel(new GridLayout(0, 1, 5, 5)); // 1 columna, varias filas
             JButton btnAgregar = new JButton("Agregar");
             JButton btnEditar = new JButton("Editar");
             JButton btnGuardar = new JButton("Guardar Cambios");
@@ -85,17 +117,10 @@ import java.awt.event.ActionEvent;
             panelBotones.add(btnGuardar);
             panelBotones.add(btnEliminar);
             panelBotones.add(btnLimpiar);
-            panelFormulario.add(panelBotones);
 
-            add(panelFormulario, BorderLayout.EAST);
-        }
+            panelFormulario.add(panelBotones, gbc);
 
-        private JPanel crearCampo(String etiqueta, JComponent campo) {
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.add(new JLabel(etiqueta), BorderLayout.WEST);
-            panel.add(campo, BorderLayout.CENTER);
-            panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-            return panel;
+            return panelFormulario;
         }
 
         private void agregarRecurso(ActionEvent e) {
