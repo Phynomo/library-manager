@@ -1,5 +1,6 @@
 package com.mycompany.bibliotecadigital.model;
 
+import com.mycompany.bibliotecadigital.gui.VentanaPrincipal;
 import com.mycompany.bibliotecadigital.persistencia.*;
 
 import java.util.*;
@@ -11,8 +12,14 @@ public class GestorBiblioteca {
     private List<Prestamo> historialpresta;
     private ListaEspera listaespera;
 
+    private VentanaPrincipal ventanaPrincipal;
+
     public GestorBiblioteca() {
         cargarDatos();
+    }
+
+    public void setVentanaPrincipal(VentanaPrincipal ventana) {
+        this.ventanaPrincipal = ventana;
     }
 
     private void cargarDatos() {
@@ -42,6 +49,9 @@ public class GestorBiblioteca {
         boolean agregado = usuarios.add(usuario);
         if (agregado) {
             ArchivoUsuarios.guardarUsuarios(usuarios);
+            if (ventanaPrincipal != null) {
+                ventanaPrincipal.actualizarEstadisticas(); // actualiza labels
+            }
         }
         return agregado;
     }
@@ -65,6 +75,9 @@ public class GestorBiblioteca {
         boolean agregado = catalogo.add(recurso);
         if (agregado) {
             ArchivoCatalogo.guardarCatalogo(catalogo);
+            if (ventanaPrincipal != null) {
+                ventanaPrincipal.actualizarEstadisticas(); 
+            }
         }
         return agregado;
     }
@@ -220,7 +233,10 @@ public class GestorBiblioteca {
         if (recurso != null) {
             boolean eliminado = catalogo.remove(recurso);
             if (eliminado) {
-                ArchivoCatalogo.guardarCatalogo(catalogo); // actualizar archivo
+                ArchivoCatalogo.guardarCatalogo(catalogo); 
+                if (ventanaPrincipal != null) {
+                    ventanaPrincipal.actualizarEstadisticas(); // actualiza labels
+                }
             }
             return eliminado;
         }

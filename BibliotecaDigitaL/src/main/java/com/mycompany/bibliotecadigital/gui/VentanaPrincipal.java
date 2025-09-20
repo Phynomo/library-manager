@@ -12,8 +12,13 @@ public class VentanaPrincipal extends JFrame {
     private PanelPrestamos panelPrestamos;
     private PanelListaEspera panelListaEspera;
 
+    private JLabel lblUsuarios;
+    private JLabel lblRecursos;
+    private JLabel lblPrestamos;
+
     public VentanaPrincipal() {
         this.gestor = new GestorBiblioteca();
+        this.gestor.setVentanaPrincipal(this);
         inicializar();
         cargarDatosPrueba();
     }
@@ -62,22 +67,27 @@ public class VentanaPrincipal extends JFrame {
         add(pestañas, BorderLayout.CENTER);
     }
 
+    public void actualizarEstadisticas() {
+        lblUsuarios.setText("Usuarios: " + gestor.getusuarios().size());
+        lblRecursos.setText("Recursos: " + gestor.getcatalogo().size());
+        lblPrestamos.setText("Prestamos Activos: " + gestor.getprestamos().size());
+    }
+
     private JPanel crearPanelEstadisticas() {
         JPanel panel = new JPanel(new FlowLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Estadísticas en Tiempo Real"));
         panel.setBackground(new Color(240, 240, 225));
-        
-        
-        JLabel lblUsuarios = new JLabel("Usuarios: " + gestor.getusuarios().size());
-        JLabel lblRecursos = new JLabel("Recursos: " + gestor.getcatalogo().size());  
-        JLabel lblPrestamos = new JLabel("Prestamos Activos: " + gestor.getprestamos().size());
-        
+
+        lblUsuarios = new JLabel("Usuarios: " + gestor.getusuarios().size());
+        lblRecursos = new JLabel("Recursos: " + gestor.getcatalogo().size());
+        lblPrestamos = new JLabel("Prestamos Activos: " + gestor.getprestamos().size());
+
         panel.add(lblUsuarios);
         panel.add(new JLabel(" | "));
         panel.add(lblRecursos);
         panel.add(new JLabel(" | "));
         panel.add(lblPrestamos);
-        
+
         return panel;
     }
 
