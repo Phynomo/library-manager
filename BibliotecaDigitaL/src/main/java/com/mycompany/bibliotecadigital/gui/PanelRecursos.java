@@ -58,10 +58,10 @@ import java.util.function.BiConsumer;
         private JPanel crearPanelFormulario() {
             JPanel panelFormulario = new JPanel(new GridBagLayout());
             panelFormulario.setBorder(BorderFactory.createTitledBorder("Agregar / Editar Recurso"));
-            panelFormulario.setPreferredSize(new Dimension(300, 0));
+           
 
             GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(5, 5, 5, 5); // margenes
+            gbc.insets = new Insets(5, 2, 1, 5); // margenes
             gbc.anchor = GridBagConstraints.WEST;
             gbc.fill = GridBagConstraints.HORIZONTAL;
 
@@ -99,7 +99,7 @@ import java.util.function.BiConsumer;
             gbc.gridy = fila[0];
             gbc.gridwidth = 2;
             gbc.weightx = 1;
-            JPanel panelBotones = new JPanel(new GridLayout(0, 1, 5, 5)); // 1 columna, varias filas
+            JPanel panelBotones = new JPanel(new GridLayout(0, 1, 1, 1)); // 1 columna, varias filas
             JButton btnAgregar = new JButton("Agregar");
             JButton btnEditar = new JButton("Editar");
             JButton btnGuardar = new JButton("Guardar Cambios");
