@@ -1,11 +1,6 @@
 package com.mycompany.bibliotecadigital.persistencia;
-
 import com.mycompany.bibliotecadigital.model.ListaEspera;
-import com.mycompany.bibliotecadigital.model.Prestamo;
-
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ArchivoListaEspera {
     private static final String ARCHIVO_ESPERA = "lista_espera.dat";

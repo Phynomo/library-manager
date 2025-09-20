@@ -126,6 +126,9 @@ public class GestorBiblioteca {
                 ArchivoPrestamos.guardarPrestamos(prestamos);
                 ArchivoCatalogo.guardarCatalogo(catalogo);
 
+                if (ventanaPrincipal != null) {
+                    ventanaPrincipal.actualizarEstadisticas(); 
+                }
                 return true;
             } else {
 
@@ -146,29 +149,22 @@ public class GestorBiblioteca {
                 .orElse(null);
 
         if (prestamo != null) {
+
             prestamo.devolver();
             if (prestamo.getRecurso() instanceof Prestable) {
                 ((Prestable) prestamo.getRecurso()).devolver();
             }
             historialpresta.add(prestamo);
-
-
+            
             ArchivoPrestamos.guardarPrestamos(prestamos);
             ArchivoCatalogo.guardarCatalogo(catalogo);
 
+            if (ventanaPrincipal != null) {
+                ventanaPrincipal.actualizarEstadisticas(); 
+            }
             return true;
         }
         return false;
-    }
-
-
-    private void procesarListaEspera(String idRecurso) {
-        EntradaEspera entrada = listaespera.siguienteEnEspera(idRecurso);
-        if (entrada != null) {
-            Usuario usuario = entrada.getUsuario();
-            System.out.println("Notificando a " + usuario.getNombre() +
-                    " que el recurso " + idRecurso + " está disponible.");
-        }
     }
 
     public List<Prestamo> getPrestamosUsuario(String idUsuario) {

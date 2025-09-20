@@ -21,6 +21,7 @@ public class VentanaPrincipal extends JFrame {
         this.gestor.setVentanaPrincipal(this);
         inicializar();
         cargarDatosPrueba();
+        actualizarEstadisticas();
     }
 
     private void inicializar() {
@@ -70,7 +71,8 @@ public class VentanaPrincipal extends JFrame {
     public void actualizarEstadisticas() {
         lblUsuarios.setText("Usuarios: " + gestor.getusuarios().size());
         lblRecursos.setText("Recursos: " + gestor.getcatalogo().size());
-        lblPrestamos.setText("Prestamos Activos: " + gestor.getprestamos().size());
+        long prestamosActivos = gestor.getprestamos().stream().filter(p -> p.isActivo()).count();
+        lblPrestamos.setText("Prestamos Activos: " + prestamosActivos);
     }
 
     private JPanel crearPanelEstadisticas() {
@@ -140,17 +142,13 @@ public class VentanaPrincipal extends JFrame {
         gestor.agregarRecurso(new LibroFisico("Design Patterns", "LF003", "Gang of Four", 
             "978-0201633612", "Addison-Wesley", 1994, "ProgramaciónII"));
         
-        gestor.agregarRecurso(new LibroDigital("Effective Java", "LD001", "Ing. Claudio Gutierrez", 
-            "978-0134685991", "Clase y Objetos", 2018, "Programación", 
-            "file:///C:/Users/User/Downloads/Clase%20-%20Clases%20y%20Objetos-1.pdf", "PDF", 15.2));
-        gestor.agregarRecurso(new LibroDigital("Effective Java", "LD002", "Spring Team", 
-            "978-2468013570", "Arreglos en Java", 2023, "Frameworks", 
-            "file:///C:/Users/User/Downloads/Clase%2010%20-%20Arreglos%20-%20Parte%20II-1.pdf", "PDF", 25.8));
-        gestor.agregarRecurso(new LibroDigital("Licenciatura en Mercadotecnia", "LD008", "Diego Monferrer Tirado", 
-            "456-0000000000", "Fundamentos del Marketing", 2023, "Frameworks", 
-            "https://drive.google.com/file/d/153-PXxCP-O0pu105IgozE1HPbeWJDd5J/view?pli=1", "HTML", 25.8));
+        gestor.agregarRecurso(new LibroFisico("Effective Java", "LD001", "Ing. Claudio Gutierrez", 
+            "978-0134685991", "Clase y Objetos", 2018, "Programación"));
 
-        gestor.agregarRecurso(new Audiobook("The Pragmatic Programmer", "AB001", "Andy Hunt & Dave Thomas", 
-            "978-0201616224", "Addison-Wesley", 1999, "Desarrollo de Software", "Various Narrators", 540));
+        gestor.agregarRecurso(new LibroFisico("Effective Java", "LD002", "Spring Team", 
+            "978-2468013570", "Arreglos en Java", 2023, "Frameworks"));
+
+        gestor.agregarRecurso(new LibroFisico("Licenciatura en Mercadotecnia", "LD008", "Diego Monferrer Tirado", 
+            "456-0000000000", "Fundamentos del Marketing", 2023, "Frameworks"));
     }
 }

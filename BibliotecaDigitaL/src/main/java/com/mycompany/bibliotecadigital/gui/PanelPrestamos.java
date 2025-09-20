@@ -223,7 +223,6 @@ public class PanelPrestamos extends JPanel {
             cargarPrestamos();
 
             var Esper = gestor.verListaEsperaRecurso(idRecurso);
-            System.out.println(Esper);
             if (!Esper.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Recurso con lista de espera, revisa esta");
             }
@@ -315,7 +314,7 @@ public class PanelPrestamos extends JPanel {
             formatofecha.format(prestamo.getFechaVencimiento()),
             estado,
             diasRestantes,
-            String.format("$%.2f", prestamo.getMulta())
+            String.format("$%.2f", prestamo.getUsuario().calcularMulta(prestamo.getDiasRetraso()))
         };
         modelotabla.addRow(fila);
     }
