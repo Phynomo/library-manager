@@ -19,7 +19,7 @@ public class GestorBiblioteca {
         this.usuarios = ArchivoUsuarios.cargarUsuarios();
         this.prestamos = ArchivoPrestamos.cargarPrestamos();
         this.historialpresta = new ArrayList<>();
-        this.listaespera = new ListaEspera();
+        this.listaespera = ArchivoListaEspera.cargarListaEspera();
         this.catalogo = ArchivoCatalogo.cargarCatalogo();
     }
 
@@ -117,6 +117,7 @@ public class GestorBiblioteca {
             } else {
 
                 listaespera.agregarAEspera(idRecurso, usuario);
+                ArchivoListaEspera.guardarListaEspera(listaespera);
                 return false;
             }
         }
@@ -179,6 +180,7 @@ public class GestorBiblioteca {
         Usuario usuario = buscarUsuario(idUsuario);
         if (usuario != null) {
             listaespera.agregarAEspera(idRecurso, usuario);
+            ArchivoListaEspera.guardarListaEspera(listaespera);
             return true;
         }
         return false;
@@ -193,6 +195,7 @@ public class GestorBiblioteca {
         ArchivoUsuarios.guardarUsuarios(usuarios);
         ArchivoCatalogo.guardarCatalogo(catalogo);
         ArchivoPrestamos.guardarPrestamos(prestamos);
+        ArchivoListaEspera.guardarListaEspera(listaespera);
     }
 
 

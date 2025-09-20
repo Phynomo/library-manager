@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class PanelPrestamos extends JPanel {
     private GestorBiblioteca gestor;
@@ -119,9 +120,15 @@ public class PanelPrestamos extends JPanel {
         }
     }
 
+    // 📚 Realizar préstamo validando lista de espera
     private void realizarPrestamo(ActionEvent e) {
         String usuarioSel = (String) cmbUsuarios.getSelectedItem();
         String recursoSel = (String) cmbRecursos.getSelectedItem();
+
+        if (usuarioSel == null || recursoSel == null) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un usuario y un recurso");
+            return;
+        }
 
         String idUsuario = usuarioSel.split(" - ")[0];
         String idRecurso = recursoSel.split(" - ")[0];
@@ -131,16 +138,64 @@ public class PanelPrestamos extends JPanel {
             return;
         }
 
+        // 🔎 Validación de lista de espera
+        List<EntradaEspera> lista = gestor.getListaEspera().verListaEspera(idRecurso);
+        if (!lista.isEmpty()) {
+            EntradaEspera primero = lista.get(0);
+            Usuario usuarioPrimero = primero.getUsuario();
+            String idUsuarioPrimero = usuarioPrimero.getIdentificacion();
+
+            // Si el usuario seleccionado no es el primero, pedir confirmación
+            if (!idUsuarioPrimero.equals(idUsuario)) {
+                String fechaPrimero = primero.getFechaSolicitud() != null
+                        ? primero.getFechaSolicitud().toString()
+                        : "fecha desconocida";
+
+                // Buscar la entrada del usuario seleccionado para mostrar fecha
+                String fechaSel = "";
+                for (EntradaEspera ent : lista) {
+                    if (ent.getUsuario().getIdentificacion().equals(idUsuario)) {
+                        fechaSel = ent.getFechaSolicitud() != null
+                                ? ent.getFechaSolicitud().toString()
+                                : "fecha desconocida";
+                        break;
+                    }
+                }
+
+                String msg = "Este recurso tiene usuarios en lista de espera.\n\n"
+                        + "➡ Primero en la lista:\n"
+                        + usuarioPrimero.getNombre() + " (ID: " + idUsuarioPrimero + ")\n"
+                        + "Solicitado: " + fechaPrimero + "\n\n"
+                        + "➡ Usuario seleccionado:\n"
+                        + gestor.buscarUsuario(idUsuario).getNombre() + " (ID: " + idUsuario + ")\n"
+                        + "Solicitado: " + fechaSel + "\n\n"
+                        + "¿Desea asignar el préstamo al usuario seleccionado en lugar del primero en la lista?";
+
+                int opcion = JOptionPane.showConfirmDialog(this, msg,
+                        "Confirmar préstamo fuera de orden", JOptionPane.YES_NO_OPTION);
+
+                if (opcion != JOptionPane.YES_OPTION) {
+                    return; // cancelar préstamo
+                }
+            }
+        }
+
+        // 🟢 Intentar préstamo
         if (gestor.realizarPrestamo(idUsuario, idRecurso)) {
-            JOptionPane.showMessageDialog(this, "Prestamo realizado exitosamente");
+            JOptionPane.showMessageDialog(this, "Préstamo realizado exitosamente");
             cmbUsuarios.setSelectedIndex(-1);
             cmbRecursos.setSelectedIndex(-1);
+
+            // Si se prestó al usuario que estaba en la espera, removerlo
+            Usuario usuarioPrestado = gestor.buscarUsuario(idUsuario);
+            gestor.getListaEspera().removerDeEspera(idRecurso, usuarioPrestado);
+
             cargarPrestamos();
         } else {
-            JOptionPane.showMessageDialog(this, "Error al realizar prestamo:\n" +
-                "- Verifique que el usuario y recurso existan\n" +
-                "- El usuario puede haber alcanzado su limite\n" +
-                "- El recurso puede no estar disponible");
+            JOptionPane.showMessageDialog(this, "Error al realizar préstamo:\n" +
+                    "- Verifique que el usuario y recurso existan\n" +
+                    "- El usuario puede haber alcanzado su límite\n" +
+                    "- El recurso puede no estar disponible");
         }
     }
 
