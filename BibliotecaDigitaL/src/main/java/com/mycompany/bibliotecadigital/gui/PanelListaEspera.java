@@ -30,13 +30,19 @@ public class PanelListaEspera extends JPanel {
         txtBuscar = new JTextField(20);
         JButton btnBuscar = new JButton("Buscar");
         JButton btnMostrarTodos = new JButton("Mostrar Todos");
+        JButton btnActualizar = new JButton("Actualizar");
 
         btnBuscar.addActionListener(this::buscarLista);
         btnMostrarTodos.addActionListener(e -> cargarListas());
+        btnActualizar.addActionListener(e -> {
+            cargarListas();
+            cargarRecursos();
+        });
 
         panelSuperior.add(txtBuscar);
         panelSuperior.add(btnBuscar);
         panelSuperior.add(btnMostrarTodos);
+        panelSuperior.add(btnActualizar);
         add(panelSuperior, BorderLayout.NORTH);
 
         // 📋 Tabla de listas de espera
