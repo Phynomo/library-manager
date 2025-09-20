@@ -311,66 +311,57 @@ public class PanelUsuarios extends JPanel {
         }
     }
 
-    private void modificarUsuario(ActionEvent e) {
-        int filaSeleccionada = tablausua.getSelectedRow();
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this,
-                    "⚠ Seleccione un usuario de la tabla para modificar",
-                    "Sin Selección", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Obtiene los datos actuales
-        String idUsuario = (String) modelotab.getValueAt(filaSeleccionada, 0);
-        String nombreUsuario = (String) modelotab.getValueAt(filaSeleccionada, 1);
-        String correoUsuario = (String) modelotab.getValueAt(filaSeleccionada, 2);
-
-
-        // Pide los nuevos valores
-
-        String nuevoId = JOptionPane.showInputDialog(this, "modificar ID:", idUsuario);
-
-        String nuevoNombre = JOptionPane.showInputDialog(this,
-                "Modificar nombre de usuario:", nombreUsuario);
-
-        String nuevoCorreo = JOptionPane.showInputDialog(this,
-                "Modificar correo del usuario:", correoUsuario);
-
-        if (!validarEmail(nuevoCorreo)) {
-            JOptionPane.showMessageDialog(this,
-                    "❌ Error: El formato del email no es valido",
-                    "Email Invalido", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-
-        // Si el usuario escribió algo, actualiza la tabla
-        if (nuevoId != null && !nuevoId.trim().isEmpty()) {
-            modelotab.setValueAt(nuevoId, filaSeleccionada, 0);
-        }
-        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
-            modelotab.setValueAt(nuevoNombre, filaSeleccionada, 1);
-        }
-        if (nuevoCorreo != null && !nuevoCorreo.trim().isEmpty()) {
-            modelotab.setValueAt(nuevoCorreo, filaSeleccionada, 2);
-        }
-
-
-        Usuario usuario = gestor.buscarUsuario(idUsuario); // usa el método que ya tienes
-        if (usuario != null) {
-            // Actualiza los campos
-            usuario.setId(nuevoId);
-            usuario.setNombre(nuevoNombre);
-            usuario.setEmail(nuevoCorreo);
-            gestor.guardartodosdatos();
-
-        } else {
-
-            System.err.println("Advertencia: no se encontró el usuario con id " + idUsuario);
-        }
-
-        JOptionPane.showMessageDialog(this, "Usuario modificado correctamente.");
+private void modificarUsuario(ActionEvent e) {
+    int filaSeleccionada = tablausua.getSelectedRow();
+    if (filaSeleccionada == -1) {
+        JOptionPane.showMessageDialog(this,
+                "⚠ Seleccione un usuario de la tabla para modificar",
+                "Sin Selección", JOptionPane.WARNING_MESSAGE);
+        return;
     }
+
+    // Obtener datos actuales
+    String idUsuario = (String) modelotab.getValueAt(filaSeleccionada, 0);
+    String nombreActual = (String) modelotab.getValueAt(filaSeleccionada, 1);
+    String correoActual = (String) modelotab.getValueAt(filaSeleccionada, 2);
+    String extraActual = (String) modelotab.getValueAt(filaSeleccionada, 4);
+
+    // Pedir nuevos valores al usuario
+    String nuevoNombre = JOptionPane.showInputDialog(this, "Modificar Nombre:", nombreActual);
+    if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) return;
+
+    String nuevoCorreo = JOptionPane.showInputDialog(this, "Modificar Correo:", correoActual);
+    if (nuevoCorreo == null || nuevoCorreo.trim().isEmpty()) return;
+
+    String nuevoExtra = JOptionPane.showInputDialog(this,
+            "Modificar Carrera/Departamento/Puesto:", extraActual);
+    if (nuevoExtra == null || nuevoExtra.trim().isEmpty()) return;
+
+    // Actualizar en la tabla
+    modelotab.setValueAt(nuevoNombre, filaSeleccionada, 1);
+    modelotab.setValueAt(nuevoCorreo, filaSeleccionada, 2);
+    modelotab.setValueAt(nuevoExtra, filaSeleccionada, 4);
+
+    // Actualizar en el objeto
+    Usuario usuario = gestor.buscarUsuario(idUsuario);
+    if (usuario != null) {
+        usuario.setNombre(nuevoNombre);
+        usuario.setEmail(nuevoCorreo);
+
+        if (usuario instanceof Estudiante) {
+            ((Estudiante) usuario).setcarrera(nuevoExtra);
+        } else if (usuario instanceof Profesor) {
+            ((Profesor) usuario).setDepartamento(nuevoExtra);
+        } else if (usuario instanceof Administrativo) {
+            ((Administrativo) usuario).setPuesto(nuevoExtra);
+        }
+
+        gestor.guardartodosdatos();
+        JOptionPane.showMessageDialog(this, "✅ Usuario modificado correctamente.");
+    } else {
+        System.err.println("⚠ No se encontró el usuario con id " + idUsuario);
+    }
+}
 
 
     private void buscarUsuarios(ActionEvent e) {
